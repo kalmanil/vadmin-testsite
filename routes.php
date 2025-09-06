@@ -18,6 +18,16 @@ Route::middleware('web')->group(function () {
                "<br>App: " . $_ENV['DOMAIN_APP_NAME'] .
                "<br>Theme: " . $_ENV['DOMAIN_THEME_COLOR'];
     });
+
+    // VAdmin React + Vite modern admin interface
+    Route::get('/admin-vite', function () {
+        return view('vadmin-react-vite.admin', [
+            'siteName' => $_ENV['DOMAIN_SITE_TITLE'] ?? 'VAdmin',
+            'domain' => request()->getHost(),
+            'app' => $_ENV['DOMAIN_APP_NAME'] ?? 'vadmin-testsite',
+            'themeColor' => $_ENV['DOMAIN_THEME_COLOR'] ?? '#0ea5e9'
+        ]);
+    });
 });
 
 
