@@ -12,14 +12,19 @@ export default defineConfig({
     manifest: true,
     rollupOptions: {
       input: './js/src/main.jsx'
-    }
+    },
+    assetsDir: 'assets'
   },
   server: {
     host: 'localhost',
     port: 5174,
+    cors: true,
     hmr: {
-      host: 'localhost'
-    }
+      host: 'localhost',
+      port: 5174
+    },
+    // Allow access from Laravel app
+    origin: 'http://localhost:5174'
   },
   resolve: {
     alias: {
@@ -31,5 +36,9 @@ export default defineConfig({
     }
   },
   publicDir: './public',
-  base: '/vadmin-react-vite/'
+  base: process.env.NODE_ENV === 'production' ? '/vadmin-react-vite/' : '/',
+  // Ensure CSS is extracted in production
+  css: {
+    devSourcemap: true
+  }
 })

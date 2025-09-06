@@ -3,352 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $siteName }}</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>{{ $siteName }} - Modern Admin</title>
+    <meta name="description" content="Modern React + Vite admin interface for {{ $siteName }}">
+    
+    {{-- Global configuration for React app --}}
+    <script>
+        window.__VADMIN_CONFIG__ = {
+            siteName: @json($siteName),
+            domain: @json($domain),
+            app: @json($app),
+            themeColor: @json($themeColor),
+            apiBase: @json(url('/api')),
+            csrfToken: @json(csrf_token()),
+            user: @json(auth()->user() ?? null),
+            environment: @json(app()->environment()),
+            routes: {
+                home: @json(url('/')),
+                about: @json(url('/about'))
+            }
+        };
+    </script>
+    
+    {{-- Basic styling for loading and fallback --}}
     <style>
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, {{ $themeColor ?? '#8b5cf6' }}, #a855f7, #7c3aed);
-            color: #1f2937;
-            min-height: 100vh;
-            overflow-x: hidden;
+            background: #f9fafb;
+            color: #111827;
         }
-        
-        #root {
-            min-height: 100vh;
+        .loading-container {
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: 100vh;
             padding: 2rem;
         }
-        
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 3rem;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            max-width: 700px;
-            width: 100%;
+        .loading-card {
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(139, 92, 246, 0.1), transparent);
-            animation: shine 3s infinite;
-            pointer-events: none;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-        
-        .logo {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, {{ $themeColor ?? '#8b5cf6' }}, #a855f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #1f2937;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .subtitle {
-            font-size: 1.1rem;
-            color: #6b7280;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .badges {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .badge {
-            background: linear-gradient(135deg, {{ $themeColor ?? '#8b5cf6' }}, #a855f7);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-            transition: transform 0.3s ease;
-        }
-        
-        .badge:hover {
-            transform: translateY(-2px) scale(1.05);
-        }
-        
-        .tech-stack {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .tech-item {
-            background: #f8fafc;
-            padding: 1rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #475569;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            cursor: pointer;
-        }
-        
-        .tech-item:hover {
-            background: {{ $themeColor ?? '#8b5cf6' }};
-            color: white;
-            transform: translateY(-4px);
-            border-color: #a855f7;
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-        }
-        
-        .links {
-            margin-top: 2rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .link {
-            color: {{ $themeColor ?? '#8b5cf6' }};
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border: 2px solid {{ $themeColor ?? '#8b5cf6' }};
-            border-radius: 12px;
-            transition: all 0.3s ease;
             background: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            max-width: 28rem;
+            width: 100%;
         }
-        
-        .link:hover {
-            background: {{ $themeColor ?? '#8b5cf6' }};
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        .spinner {
+            width: 4rem;
+            height: 4rem;
+            border: 4px solid #dbeafe;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
         }
-        
-        .features {
-            margin-top: 2rem;
-            text-align: left;
-            position: relative;
-            z-index: 2;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-        
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .feature {
-            background: #f1f5f9;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid {{ $themeColor ?? '#8b5cf6' }};
-        }
-        
-        .feature-title {
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 0.5rem;
-        }
-        
-        .feature-desc {
-            font-size: 0.85rem;
-            color: #64748b;
-        }
-        
-        .admin-panel {
-            background: linear-gradient(135deg, {{ $themeColor ?? '#8b5cf6' }}, #a855f7);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin: 2rem 0;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .admin-title {
-            font-size: 1.2rem;
+        .loading-title {
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            color: #111827;
         }
-        
-        .admin-desc {
-            font-size: 0.9rem;
-            opacity: 0.9;
+        .loading-subtitle {
+            color: #6b7280;
+            margin-bottom: 1rem;
         }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
         }
-        
-        .container {
-            animation: fadeInUp 0.8s ease-out;
+        .loading-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            background: #2563eb;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
         }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 2rem;
-                margin: 1rem;
-            }
-            
-            .title {
-                font-size: 2rem;
-            }
-            
-            .badges {
-                flex-direction: column;
-                align-items: center;
-            }
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
         }
     </style>
+    
+    {{-- Load assets based on environment --}}
+    @if(app()->environment('local'))
+        {{-- Development: Check if Vite dev server is available --}}
+        <script>
+            // Check if Vite dev server is running
+            fetch('http://localhost:5174/' + '@' + 'vite/client')
+                .then(() => {
+                    // Vite server is running, load development assets
+                    const viteClient = document.createElement('script');
+                    viteClient.type = 'module';
+                    viteClient.src = 'http://localhost:5174/' + '@' + 'vite/client';
+                    document.head.appendChild(viteClient);
+                    
+                    const mainScript = document.createElement('script');
+                    mainScript.type = 'module';
+                    mainScript.src = 'http://localhost:5174/js/src/main.jsx';
+                    document.head.appendChild(mainScript);
+                })
+                .catch(() => {
+                    // Vite server not running, show development instructions
+                    console.warn('Vite dev server not running on localhost:5174');
+                    document.getElementById('vadmin-root').innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; font-family: system-ui, sans-serif; background: #f9fafb;">
+                            <div style="text-align: center; background: white; padding: 3rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 600px; border: 1px solid #e5e7eb;">
+                                <div style="font-size: 4rem; margin-bottom: 1rem;">🚀</div>
+                                <h1 style="color: #1f2937; margin-bottom: 1rem; font-size: 2rem;">Development Mode</h1>
+                                <p style="color: #6b7280; margin-bottom: 2rem; line-height: 1.6;">Start the Vite development server to use the React admin interface.</p>
+                                <div style="background: #f3f4f6; padding: 1.5rem; border-radius: 0.75rem; font-family: 'Courier New', monospace; text-align: left; margin-bottom: 2rem; border: 1px solid #d1d5db;">
+                                    <div style="margin-bottom: 0.5rem;"><strong>cd resources/views/vadmin-react-vite</strong></div>
+                                    <div style="margin-bottom: 0.5rem;"><strong>npm install</strong></div>
+                                    <div><strong>npm run dev</strong></div>
+                                </div>
+                                <p style="color: #6b7280; font-size: 0.9rem; background: #ecfdf5; padding: 1rem; border-radius: 0.5rem; border: 1px solid #a7f3d0;">
+                                    ✅ <strong>Server will start on:</strong> <code>http://localhost:5174</code><br>
+                                    Then refresh this page to load the React app
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                });
+        </script>
+    @else
+        {{-- Production: Built assets --}}
+        @php
+            $manifestPath = resource_path('views/vadmin-react-vite/dist/manifest.json');
+            $hasManifest = file_exists($manifestPath);
+            $manifest = $hasManifest ? json_decode(file_get_contents($manifestPath), true) : null;
+            $entrypoint = $manifest['js/src/main.jsx'] ?? null;
+        @endphp
+        
+        @if($hasManifest && $entrypoint)
+            {{-- Load production CSS --}}
+            @if(isset($entrypoint['css']))
+                @foreach($entrypoint['css'] as $css)
+                    <link rel="stylesheet" href="{{ asset('vadmin-react-vite/dist/' . $css) }}">
+                @endforeach
+            @endif
+        @endif
+    @endif
 </head>
 <body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        function VadminReactViteApp() {
-            const [mounted, setMounted] = useState(false);
-            const [activeFeature, setActiveFeature] = useState(null);
-            
-            useEffect(() => {
-                setMounted(true);
-            }, []);
-
-            const appData = {
-                siteName: @json($siteName),
-                domain: @json($domain),
-                app: @json($app),
-                themeColor: @json($themeColor)
-            };
-
-            const features = [
-                {
-                    title: "React 18",
-                    desc: "Modern React with hooks and concurrent features"
-                },
-                {
-                    title: "Vite-Ready",
-                    desc: "Fast development with modern build tools"
-                },
-                {
-                    title: "Laravel Backend",
-                    desc: "Robust PHP framework with Eloquent ORM"
-                },
-                {
-                    title: "Admin Interface",
-                    desc: "Built-in Vadmin panel for content management"
-                }
-            ];
-
-            return (
-                <div className="container">
-                    <div className="logo">⚛️🚍⚡</div>
-                    <h1 className="title">{appData.siteName}</h1>
-                    <p className="subtitle">Vadmin React + Vite + Laravel Testsite</p>
-                    
-                    <div className="badges">
-                        <div className="badge">Domain: {appData.domain}</div>
-                        <div className="badge">App: {appData.app}</div>
-                        <div className="badge">Theme: {appData.themeColor}</div>
-                    </div>
-                    
-                    <div className="admin-panel">
-                        <div className="admin-title">🎛️ Vadmin Panel</div>
-                        <div className="admin-desc">
-                            This is a React+Vite powered interface for the Vadmin testsite app with modern UI components and fast development workflow.
-                        </div>
-                    </div>
-                    
-                    <div className="tech-stack">
-                        <div className="tech-item">React 18</div>
-                        <div className="tech-item">Vite</div>
-                        <div className="tech-item">Laravel 12</div>
-                        <div className="tech-item">Vadmin</div>
-                        <div className="tech-item">PHP 8.2+</div>
-                        <div className="tech-item">Blade</div>
-                        <div className="tech-item">SQLite</div>
-                        <div className="tech-item">MVVM</div>
-                    </div>
-                    
-                    <div className="features">
-                        <h3>Key Features</h3>
-                        <div className="feature-grid">
-                            {features.map((feature, index) => (
-                                <div key={index} className="feature">
-                                    <div className="feature-title">{feature.title}</div>
-                                    <div className="feature-desc">{feature.desc}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    
-                    <div className="links">
-                        <a href="/about" className="link">About</a>
-                        <a href="/vadmin" className="link">Vadmin Panel</a>
-                        <a href="/vadmin/dashboard" className="link">Dashboard</a>
-                    </div>
+    <div id="vadmin-root">
+        {{-- Loading fallback --}}
+        <div class="loading-container">
+            <div class="loading-card">
+                <div class="spinner"></div>
+                <h1 class="loading-title">{{ $siteName }}</h1>
+                <p class="loading-subtitle">Loading modern admin interface...</p>
+                <div class="loading-dots">
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
                 </div>
-            );
-        }
+            </div>
+        </div>
+    </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<VadminReactViteApp />);
-    </script>
+    {{-- Load JavaScript based on environment --}}
+    @if(!app()->environment('local'))
+        @if(isset($entrypoint) && isset($entrypoint['file']))
+            {{-- Production: Load built JS --}}
+            <script type="module" src="{{ asset('vadmin-react-vite/dist/' . $entrypoint['file']) }}"></script>
+        @else
+            {{-- Production fallback: Show build instructions --}}
+            <script>
+                console.warn('VAdmin React Vite: Production mode detected but no built assets found.');
+                document.getElementById('vadmin-root').innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; font-family: system-ui, sans-serif; background: #f9fafb;">
+                        <div style="text-align: center; background: white; padding: 3rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 600px; border: 1px solid #e5e7eb;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">🏗️</div>
+                            <h1 style="color: #1f2937; margin-bottom: 1rem; font-size: 2rem;">Build Required</h1>
+                            <p style="color: #6b7280; margin-bottom: 2rem; line-height: 1.6;">VAdmin React Vite needs to be built for production mode.</p>
+                            <div style="background: #f3f4f6; padding: 1.5rem; border-radius: 0.75rem; font-family: 'Courier New', monospace; text-align: left; margin-bottom: 2rem; border: 1px solid #d1d5db;">
+                                <div style="margin-bottom: 0.5rem;"><strong>cd resources/views/vadmin-react-vite</strong></div>
+                                <div style="margin-bottom: 0.5rem;"><strong>npm install</strong></div>
+                                <div><strong>npm run build</strong></div>
+                            </div>
+                            <p style="color: #6b7280; font-size: 0.9rem; background: #eff6ff; padding: 1rem; border-radius: 0.5rem; border: 1px solid #bfdbfe;">
+                                💡 <strong>Tip:</strong> Set <code>APP_ENV=local</code> in your .env file for development mode
+                            </p>
+                        </div>
+                    </div>
+                `;
+            </script>
+        @endif
+    @endif
 </body>
 </html>

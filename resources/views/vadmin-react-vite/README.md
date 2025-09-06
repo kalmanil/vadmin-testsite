@@ -5,13 +5,15 @@ A modern React + Vite admin interface for the vadmin-testsite Laravel applicatio
 ## 🚀 Features
 
 - **Modern React 18** with functional components and hooks
-- **Vite** for fast development and optimized builds
+- **Vite** for lightning-fast development and optimized builds
 - **Tailwind CSS** for utility-first styling
 - **React Router** for client-side routing
 - **Lucide React** for modern icons
 - **Dark/Light Theme** with persistent preferences
 - **Responsive Design** with mobile-first approach
 - **Error Boundaries** for graceful error handling
+- **Laravel Integration** with config injection
+- **Hot Module Replacement** for instant updates
 - **TypeScript Ready** (dev dependencies included)
 
 ## 📁 Project Structure
@@ -20,16 +22,16 @@ A modern React + Vite admin interface for the vadmin-testsite Laravel applicatio
 vadmin-react-vite/
 ├── js/src/
 │   ├── components/          # React components
-│   │   ├── Dashboard.jsx    # Main dashboard
-│   │   ├── Settings.jsx     # Settings page
-│   │   ├── Layout.jsx       # App layout wrapper
+│   │   ├── Dashboard.jsx    # Feature-rich admin dashboard
+│   │   ├── Settings.jsx     # Complete settings page
+│   │   ├── Layout.jsx       # Responsive layout with sidebar
 │   │   └── ErrorBoundary.jsx # Error handling
 │   ├── hooks/               # Custom React hooks
-│   │   └── useConfig.js     # Configuration hook
+│   │   └── useConfig.js     # Laravel configuration hook
 │   ├── styles/              # CSS styles
-│   │   └── index.css        # Main styles with Tailwind
+│   │   └── index.css        # Tailwind + custom styles
 │   ├── utils/               # Utility functions
-│   ├── App.jsx              # Main App component
+│   ├── App.jsx              # Main App component with routing
 │   └── main.jsx             # React entry point
 ├── public/                  # Static assets
 ├── dist/                    # Built assets (generated)
@@ -37,53 +39,119 @@ vadmin-react-vite/
 ├── vite.config.js           # Vite configuration
 ├── tailwind.config.js       # Tailwind configuration
 ├── postcss.config.js        # PostCSS configuration
+├── dev-server.js            # Development helper script
 ├── index.blade.php          # Laravel Blade template
 └── README.md                # This file
 ```
 
 ## 🛠️ Development Setup
 
-1. **Navigate to the project directory:**
+### 1. **Navigate to the project directory:**
+```bash
+cd resources/views/vadmin-react-vite
+```
+
+### 2. **Install dependencies:**
+```bash
+npm install
+```
+
+### 3. **Start the development server:**
+```bash
+npm run dev
+```
+This will start Vite dev server on `http://localhost:5174` with Hot Module Replacement (HMR)
+
+### 4. **Add Laravel route** to serve the view:
+Add this to your Laravel `routes/web.php` or appropriate route file:
+
+```php
+Route::get('/admin-vite', function () {
+    return view('vadmin-react-vite.index', [
+        'siteName' => env('DOMAIN_SITE_TITLE', 'VAdmin'),
+        'domain' => request()->getHost(),
+        'app' => env('DOMAIN_APP_NAME', 'vadmin-testsite'),
+        'themeColor' => env('DOMAIN_THEME_COLOR', '#0ea5e9')
+    ]);
+});
+```
+
+### 5. **Access your app:**
+- **Development:** Visit your Laravel app at `/admin-vite` (e.g., `http://localhost:8000/admin-vite`)
+- **Vite Dev Server:** The React app will be served from `http://localhost:5174`
+
+## 📦 Build for Production
+
+### 1. **Build the application:**
+```bash
+npm run build
+```
+
+### 2. **Preview the production build:**
+```bash
+npm run preview
+```
+
+### 3. **Deploy built assets:**
+The built files will be in the `dist/` directory with a manifest.json file. The Laravel Blade template automatically detects production mode and loads the correct assets.
+
+### 4. **Production Laravel route:**
+```php
+Route::get('/admin-vite', function () {
+    return view('vadmin-react-vite.index', [
+        'siteName' => env('DOMAIN_SITE_TITLE', 'VAdmin'),
+        'domain' => request()->getHost(),
+        'app' => env('DOMAIN_APP_NAME', 'vadmin-testsite'),
+        'themeColor' => env('DOMAIN_THEME_COLOR', '#0ea5e9')
+    ]);
+});
+```
+
+## 🔗 Laravel Integration
+
+### **How it Works:**
+1. **Development Mode:** Laravel detects `local` environment and loads Vite dev server assets
+2. **Production Mode:** Laravel reads `dist/manifest.json` and loads built CSS/JS files
+3. **Configuration:** Laravel injects config via `window.__VADMIN_CONFIG__`
+4. **Assets:** Vite handles CSS extraction, JS bundling, and asset optimization
+
+### **Environment Detection:**
+```php
+@if(app()->environment('local'))
+    {{-- Development: Vite dev server --}}
+    <script type="module" src="http://localhost:5174/@vite/client"></script>
+    <script type="module" src="http://localhost:5174/js/src/main.jsx"></script>
+@else
+    {{-- Production: Built assets --}}
+    @if(file_exists(resource_path('views/vadmin-react-vite/dist/manifest.json')))
+        {{-- Load CSS and JS from manifest --}}
+    @endif
+@endif
+```
+
+## 🚀 Quick Start
+
+1. **Clone and navigate:**
    ```bash
    cd resources/views/vadmin-react-vite
    ```
 
-2. **Install dependencies:**
+2. **Install and start:**
    ```bash
    npm install
-   ```
-
-3. **Start the development server:**
-   ```bash
    npm run dev
    ```
-   This will start Vite dev server on `http://localhost:5174`
 
-4. **Configure Laravel route** to serve the Blade template:
-   ```php
-   Route::get('/admin-vite', function () {
-       return view('vadmin-react-vite.index', [
-           'siteName' => env('DOMAIN_SITE_TITLE', 'VAdmin'),
-           'domain' => request()->getHost(),
-           'app' => env('DOMAIN_APP_NAME', 'vadmin-testsite'),
-           'themeColor' => env('DOMAIN_THEME_COLOR', '#0ea5e9')
-       ]);
-   });
-   ```
+3. **Add Laravel route and visit `/admin-vite`**
 
-## 📦 Build for Production
+## 🔧 Available Scripts
 
-1. **Build the application:**
-   ```bash
-   npm run build
-   ```
-
-2. **Preview the production build:**
-   ```bash
-   npm run preview
-   ```
-
-The built files will be in the `dist/` directory and can be served by your Laravel application.
+- `npm run dev` - Start Vite development server
+- `npm run dev:help` - Show development setup help
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint (when configured)
+- `npm run clean` - Clean dist directory
 
 ## 🎨 Customization
 
