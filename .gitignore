@@ -8,3 +8,7 @@ Thumbs.db
 /.idea/
 /.vscode/
 /.env.local
+
+# VAdmin React Vite build output
+public/vadmin-react-vite/dist
+resources/views/vadmin-react-vite/dist

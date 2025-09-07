@@ -65,7 +65,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <Router basename="/vadmin-react-vite">
+      <Router basename="/admin-vite">
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
           <Layout theme={theme} onThemeToggle={toggleTheme}>
             <Routes>

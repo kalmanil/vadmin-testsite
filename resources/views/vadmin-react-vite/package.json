@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Modern React + Vite admin interface for vadmin-testsite",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 5178",
     "dev:help": "node dev-server.js",
     "build": "vite build",
     "preview": "vite preview",

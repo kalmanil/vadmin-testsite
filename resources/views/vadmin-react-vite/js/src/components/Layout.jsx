@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { useConfig } from '@hooks/useConfig'
 
-const Layout = ({ children, theme, onThemeToggle }) => {
+function Layout({ children, theme, onThemeToggle }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const location = useLocation()
   const config = useConfig()
@@ -40,10 +40,7 @@ const Layout = ({ children, theme, onThemeToggle }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex flex-col h-full">
           {/* Sidebar header */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
@@ -175,4 +172,5 @@ const Layout = ({ children, theme, onThemeToggle }) => {
   )
 }
 
+Layout.displayName = 'Layout'
 export default Layout

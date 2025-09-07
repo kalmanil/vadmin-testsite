@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $siteName }} - Modern Admin</title>
     <meta name="description" content="Modern React + Vite admin interface for {{ $siteName }}">
+
+    <script type="module">
+        import RefreshRuntime from 'http://localhost:5178/@react-refresh'
+        RefreshRuntime.injectIntoGlobalHook(window)
+        window.$RefreshReg$ = () => {}
+        window.$RefreshSig$ = () => (type) => type
+        window.__vite_plugin_react_preamble_installed__ = true
+    </script>
     
     {{-- Global configuration for React app --}}
     <script>
@@ -113,7 +121,8 @@
     <script>
         // Configuration
         const isLocal = @json(app()->environment('local'));
-        const viteDevServer = 'http://localhost:5174';
+        const vitePort = 5178;
+        const viteDevServer = window.location.protocol + '//' + window.location.hostname + ':' + vitePort;
         const viteClientPath = '/' + '@' + 'vite/client';
         
         if (isLocal) {
@@ -139,12 +148,12 @@
                 })
                 .catch(() => {
                     // Vite server not running, show development instructions
-                    console.warn('🚀 VAdmin React Vite: Dev server not running on localhost:5174');
+                    console.warn('🚀 VAdmin React Vite: Dev server not running on localhost:' + vitePort);
                     showDevInstructions();
                 });
         } else {
             // Production mode: Try to load built assets
-            fetch('/vadmin-react-vite/dist/manifest.json')
+            fetch('/vadmin-react-vite/dist/.vite/manifest.json')
                 .then(response => response.json())
                 .then(manifest => {
                     const entrypoint = manifest['js/src/main.jsx'];
@@ -187,7 +196,7 @@
                             <div><strong>npm run dev</strong></div>
                         </div>
                         <p style="color: #6b7280; font-size: 0.9rem; background: #ecfdf5; padding: 1rem; border-radius: 0.5rem; border: 1px solid #a7f3d0;">
-                            ✅ <strong>Server will start on:</strong> <code>http://localhost:5174</code><br>
+                            ✅ <strong>Server will start on:</strong> <code>http://localhost:' + vitePort + '</code><br>
                             Then refresh this page to load the React app
                         </p>
                     </div>

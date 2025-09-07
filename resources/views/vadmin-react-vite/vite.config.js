@@ -1,44 +1,29 @@
 import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
+import path from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  root: '.',
-  build: {
-    outDir: './dist',
-    emptyOutDir: true,
-    manifest: true,
-    rollupOptions: {
-      input: './js/src/main.jsx'
-    },
-    assetsDir: 'assets'
-  },
   server: {
-    host: 'localhost',
-    port: 5174,
-    cors: true,
-    hmr: {
-      host: 'localhost',
-      port: 5174
-    },
-    // Allow access from Laravel app
-    origin: 'http://localhost:5174'
+    port: 5178,
+    strictPort: true,
+    host: true,
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './js/src'),
-      '@components': resolve(__dirname, './js/src/components'),
-      '@hooks': resolve(__dirname, './js/src/hooks'),
-      '@utils': resolve(__dirname, './js/src/utils'),
-      '@styles': resolve(__dirname, './js/src/styles')
+      '@': path.resolve(__dirname, './js/src'),
+      '@components': path.resolve(__dirname, './js/src/components'),
+      '@hooks': path.resolve(__dirname, './js/src/hooks'),
+      '@styles': path.resolve(__dirname, './js/src/styles')
     }
   },
-  publicDir: './public',
-  base: process.env.NODE_ENV === 'production' ? '/vadmin-react-vite/' : '/',
-  // Ensure CSS is extracted in production
-  css: {
-    devSourcemap: true
-  }
+  build: {
+    outDir: 'public/vadmin-react-vite/dist', // match Blade path
+    emptyOutDir: true,
+    manifest: true,
+    rollupOptions: {
+      input: 'js/src/main.jsx', // 👈 fixed path
+    },
+  },
 })

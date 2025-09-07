@@ -12,13 +12,6 @@ Route::middleware('web')->group(function () {
         ]);
     });
 
-    Route::get('/about', function () {
-        return "About " . $_ENV['DOMAIN_SITE_TITLE'] . " - powered by Larabus" .
-               "<br>Domain: " . request()->getHost() .
-               "<br>App: " . $_ENV['DOMAIN_APP_NAME'] .
-               "<br>Theme: " . $_ENV['DOMAIN_THEME_COLOR'];
-    });
-
     // VAdmin React + Vite modern admin interface
     Route::get('/admin-vite', function () {
         return view('vadmin-react-vite.admin', [
