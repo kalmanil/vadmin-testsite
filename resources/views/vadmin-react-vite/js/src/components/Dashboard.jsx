@@ -83,12 +83,23 @@ const Dashboard = () => {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Welcome to {config.siteName}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Here's what's happening with your admin dashboard today.
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Welcome to {config.siteName}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Here's what's happening with your admin dashboard today.
+            </p>
+          </div>
+          <a 
+            href="/"
+            className="btn btn-secondary inline-flex items-center gap-2 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
+          >
+            <span>🏠</span>
+            Back to Main Site
+          </a>
+        </div>
       </div>
 
       {/* Stats Grid */}

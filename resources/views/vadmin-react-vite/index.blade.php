@@ -71,7 +71,7 @@
 
             console.log('✅ VAdmin React Vite: Dev mode loaded from port ' + vitePort);
         } else {
-            // Production: load built assets from /public/vadmin-react-vite/dist
+            // Production: load built assets from /vadmin-react-vite/dist
             fetch('/vadmin-react-vite/dist/.vite/manifest.json')
                 .then(r => r.json())
                 .then(manifest => {

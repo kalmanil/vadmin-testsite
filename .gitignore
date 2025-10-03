@@ -1,14 +1,299 @@
-/vendor/
-/node_modules/
+# VAdmin Testsite App - Git Ignore Configuration
+# Specific to vadmin.larabus.dev
+
+# =================================
+# 🔐 SENSITIVE & PRIVATE FILES
+# =================================
+
+# Environment files
 .env
-.env.*
-storage/*.key
+.env.local
+.env.production
+.env.staging
+.env.testing
+.env.private
+.env.backup
+!.env.example
+!.env.example.*
+
+# API Keys & Secrets
+config/secrets.php
+config/api-keys.php
+config/private-config.php
+keys/
+secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Database credentials
+database.env
+db-config.php
+
+# =================================
+# 🧪 DEVELOPMENT & TESTING
+# =================================
+
+# Development logs
+*.log
+debug.log
+error.log
+access.log
+vadmin.log
+
+# Testing files
+phpunit.xml
+!phpunit.xml.dist
+/coverage/
+/.phpunit.cache
+.coverage
+.nyc_output
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*~
+.#*
+
+# =================================
+# 💻 IDE & EDITOR FILES
+# =================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# PhpStorm
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+.#*
+\#*\#
+.\#*
+
+# =================================
+# 🖥️ OPERATING SYSTEM FILES
+# =================================
+
+# macOS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+
+# Windows
 Thumbs.db
-/.idea/
-/.vscode/
-/.env.local
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# =================================
+# 📦 DEPENDENCIES & BUILD FILES
+# =================================
+
+# Composer (if app has its own dependencies)
+/vendor/
+composer.lock
+auth.json
+
+# NPM/Node (for React/Vite frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+package-lock.json
+yarn.lock
+
+# Build files
+/build/
+/dist/
+/public/build/
+/public/hot
+/public/mix-manifest.json
+
+# =================================
+# 🚀 DEPLOYMENT & PRODUCTION
+# =================================
+
+# Deployment scripts with credentials
+deploy-prod.sh
+deploy-staging.sh
+deploy-production.sh
+*.deploy.sh
+.env.deploy
+deployment-config.php
+webhook-deploy.php
+webhook-*.php
+setup-private-repo.sh
+setup-*.sh
+
+# Server-specific files
+.htaccess.backup
+robots.txt.backup
+
+# Backup files
+*.backup.*
+backup/
+backups/
+
+# Release files
+releases/
+*.tar.gz
+*.zip
+*.rar
+
+# =================================
+# 📱 VADMIN-TESTSITE SPECIFIC
+# =================================
 
 # VAdmin React Vite build output
-public/vadmin-react-vite/dist
-resources/views/vadmin-react-vite/dist
+public/vadmin-react-vite/dist/
+resources/views/vadmin-react-vite/dist/
+
+# React/Vite development files
+resources/views/vadmin-react-vite/node_modules/
+resources/views/vadmin-react-vite/.vite/
+resources/views/vadmin-react-vite/dist/
+
+# Client-specific customizations
+client-configs/
+custom-themes/
+private-assets/
+
+# Testing data
+test-data/
+sample-data/
+fixtures/
+
+# Experimental features
+experimental/
+beta-features/
+
+# Analytics & tracking
+analytics/
+tracking-codes.php
+
+# Custom uploads (if any)
+uploads/private/
+media/private/
+
+# VAdmin specific logs
+vadmin-*.log
+react-*.log
+vite-*.log
+
+# =================================
+# 🛠️ TOOLS & UTILITIES
+# =================================
+
+# Git hooks
+.git/hooks/deploy
+.git/hooks/post-receive
+
+# Docker (if used)
+.docker/
+docker-compose.override.yml
+Dockerfile.local
+
+# Vagrant
+.vagrant/
+Vagrantfile.local
+
+# =================================
+# 📊 CACHE & TEMPORARY
+# =================================
+
+# Laravel caches (if app generates its own)
+bootstrap/cache/compiled.php
+bootstrap/cache/config.php
+bootstrap/cache/packages.php
+bootstrap/cache/services.php
+
+# View caches
+storage/framework/views/*.php
+
+# Session files
+storage/framework/sessions/*
+
+# Log files
+storage/logs/*.log
+
+# =================================
+# 📝 DOCUMENTATION BUILDS
+# =================================
+
+# Documentation
+/docs/build/
+/_site/
+.jekyll-cache/
+
+# API documentation
+/api-docs/
+/swagger-ui/
+
+# =================================
+# 🔧 CONFIGURATION OVERRIDES
+# =================================
+
+# Local configuration overrides
+config/local/
+config/override/
+local-settings.php
+
+# Feature flags
+feature-flags.json
+features.local.php
+
+# =================================
+# 🎯 ALLOWED FILES (Examples)
+# =================================
+# These are the files that SHOULD be tracked:
+# 
+# ✅ routes.php
+# ✅ resources/views/vadmin-react-vite/ (source files)
+# ✅ resources/views/vadmin-testsite/
+# ✅ controllers/ (if any)
+# ✅ models/ (if any)
+# ✅ middleware/ (if any)
+# ✅ config/app-config.php (non-sensitive)
+# ✅ README.md
+# ✅ .gitignore (this file)
+# ✅ deployment scripts (without credentials)
+# ✅ tests/ (unit tests)
+# ✅ database/migrations/ (if any)
+
+# =================================
+# 📋 NOTES
+# =================================
+# This .gitignore is specific to the vadmin-testsite app
+# Main larabus framework has its own .gitignore
+# Keep sensitive data out of version control
+# Use environment variables for configuration
+# VAdmin React/Vite specific patterns included

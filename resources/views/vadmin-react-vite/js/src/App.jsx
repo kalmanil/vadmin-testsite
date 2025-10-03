@@ -16,7 +16,7 @@ function App() {
     const initApp = async () => {
       try {
         // Simulate initialization delay
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise(resolve => setTimeout(resolve, 500))
         
         // Check for saved theme preference
         const savedTheme = localStorage.getItem('vadmin-theme') || 'light'
@@ -56,16 +56,17 @@ function App() {
             {config.siteName}
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Initializing modern admin interface...
+            Loading dashboard...
           </p>
         </div>
       </div>
     )
   }
 
+  // Simple routing - always use root path
   return (
     <ErrorBoundary>
-      <Router basename="/admin-vite">
+      <Router basename="/" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
           <Layout theme={theme} onThemeToggle={toggleTheme}>
             <Routes>
@@ -78,6 +79,11 @@ function App() {
       </Router>
     </ErrorBoundary>
   )
+}
+
+// Enable HMR for App component
+if (import.meta.hot) {
+  import.meta.hot.accept()
 }
 
 export default App

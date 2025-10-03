@@ -1,0 +1,52 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * VAdmin Testsite - App-Specific Artisan
+ * 
+ * Clean, simple artisan experience for this specific app.
+ * Usage: php artisan [command] from within the vadmin-testsite folder
+ */
+
+// Get app name from current directory
+$appName = basename(dirname(__FILE__));
+
+// Set up domain context for Larabus
+$_ENV['DOMAIN_APP_NAME'] = $appName;
+$_ENV['DOMAIN_SITE_TITLE'] = 'VAdmin Testsite';
+$_ENV['DOMAIN_VIEW_TEMPLATE'] = 'vadmin-react-vite.index';
+$_ENV['DOMAIN_THEME_COLOR'] = '#8b5cf6';
+
+// Set app-specific database configuration
+$_ENV['DOMAIN_DB_DEFAULT'] = 'vadmin_testsite_sqlite';
+$_ENV['DOMAIN_DB_CONNECTIONS_VADMIN_TESTSITE_SQLITE_DRIVER'] = 'sqlite';
+$_ENV['DOMAIN_DB_CONNECTIONS_VADMIN_TESTSITE_SQLITE_DATABASE'] = __DIR__ . '/database/database.sqlite';
+$_ENV['DOMAIN_DB_CONNECTIONS_VADMIN_TESTSITE_SQLITE_PREFIX'] = '';
+$_ENV['DOMAIN_DB_CONNECTIONS_VADMIN_TESTSITE_SQLITE_FOREIGN_KEY_CONSTRAINTS'] = 'true';
+
+// Set app-specific cache and session
+$_ENV['CACHE_PREFIX'] = 'vadmin_';
+$_ENV['SESSION_NAME'] = 'vadmin_session';
+
+// Set console context
+$_ENV['DOMAIN_IS_CONSOLE'] = 'true';
+
+// Check if this is a serve command
+if (isset($argv[1]) && $argv[1] === 'serve') {
+    echo "🚍 Larabus App-Specific Artisan\n";
+    echo "❌ 'serve' command is not supported in app-specific artisans.\n\n";
+    echo "📁 Run from domain folder\n";
+    echo "   php -S localhost:8001 index.php\n\n";
+    exit(1);
+}
+
+// Load Laravel artisan from the main Larabus directory
+require __DIR__ . '/../../artisan';
+
+
+
+
+
+
+
+

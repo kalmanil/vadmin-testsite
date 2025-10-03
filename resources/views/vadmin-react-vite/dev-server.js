@@ -24,14 +24,14 @@ async function startDevServer() {
       configFile: configPath,
       server: {
         host: 'localhost',
-        port: 5174
+        port: 5178
       }
     })
     
     await server.listen()
     
     console.log('\n✅ Vite dev server started successfully!')
-    console.log('🌐 Local:   http://localhost:5174/')
+    console.log('🌐 Local:   http://localhost:5178/')
     console.log('🔗 Laravel: Add route to serve the vadmin-react-vite view')
     console.log('\n📝 Example Laravel route:')
     console.log(`Route::get('/admin-vite', function () {

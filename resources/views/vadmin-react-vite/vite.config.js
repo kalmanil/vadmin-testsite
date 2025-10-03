@@ -4,11 +4,31 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react({
+    // Enable CSS HMR
+    fastRefresh: true
+  })],
+  root: '.',
+  css: {
+    devSourcemap: true
+  },
   server: {
     port: 5178,
     strictPort: true,
-    host: true,
+    host: '0.0.0.0',  // Listen on all interfaces for WSL
+    cors: true,
+    origin: '*',
+    allowedHosts: ['localhost', '.test', '.local', 'all'],
+    hmr: {
+      port: 5178,
+      host: 'localhost',
+      protocol: 'ws',
+      clientPort: 5178
+    },
+    watch: {
+      usePolling: true,   // Enable polling for WSL file system
+      interval: 100
+    }
   },
   resolve: {
     alias: {
@@ -19,11 +39,12 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'public/vadmin-react-vite/dist', // match Blade path
+    outDir: 'dist', // Build to local dist directory
     emptyOutDir: true,
     manifest: true,
     rollupOptions: {
-      input: 'js/src/main.jsx', // 👈 fixed path
+      input: path.resolve(__dirname, 'index.html'),
     },
   },
+  publicDir: 'public', // Specify public directory separately
 })
