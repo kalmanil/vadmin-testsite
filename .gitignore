@@ -134,6 +134,8 @@ yarn.lock
 # Build files
 /build/
 /dist/
+# Exception: Allow React Vite production builds
+!/resources/views/vadmin-react-vite/dist/
 /public/build/
 /public/hot
 /public/mix-manifest.json
