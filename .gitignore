@@ -134,8 +134,6 @@ yarn.lock
 # Build files
 /build/
 /dist/
-# Exception: Allow React Vite production builds
-!/resources/views/vadmin-react-vite/dist/
 /public/build/
 /public/hot
 /public/mix-manifest.json
@@ -170,19 +168,6 @@ releases/
 *.tar.gz
 *.zip
 *.rar
-
-# =================================
-# 📱 VADMIN-TESTSITE SPECIFIC
-# =================================
-
-# VAdmin React Vite build output
-public/vadmin-react-vite/dist/
-resources/views/vadmin-react-vite/dist/
-
-# React/Vite development files
-resources/views/vadmin-react-vite/node_modules/
-resources/views/vadmin-react-vite/.vite/
-resources/views/vadmin-react-vite/dist/
 
 # Client-specific customizations
 client-configs/

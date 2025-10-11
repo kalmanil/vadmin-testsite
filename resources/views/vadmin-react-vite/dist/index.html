@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VAdmin React Vite - Direct Access</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background: #f3f4f6;
+      }
+      .direct-access-notice {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .btn {
+        display: inline-block;
+        background: #0ea5e9;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        margin: 10px;
+        transition: background 0.2s;
+      }
+      .btn:hover {
+        background: #0284c7;
+      }
+      .btn-secondary {
+        background: #6b7280;
+      }
+      .btn-secondary:hover {
+        background: #4b5563;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-zpBYmkFd.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BYWrKZjk.css">
+  </head>
+  <body>
+    <div class="direct-access-notice">
+      <h1>🚀 VAdmin React Vite</h1>
+      <p>You're accessing the React dev server directly. To use the full admin interface, visit the Laravel application:</p>
+      
+      <div style="margin: 20px 0;">
+        <a href="http://localhost/" class="btn">
+          🏠 Main Laravel Site
+        </a>
+        <a href="http://localhost/admin-vite" class="btn btn-secondary">
+          🎯 Admin Dashboard (Laravel)
+        </a>
+        <a href="#" id="direct-dashboard-btn" class="btn" style="background: #059669;">
+          🚀 Direct Dashboard 
+          <span class="port-info">(Port: <span class="current-port"></span>)</span>
+        </a>
+      </div>
+      
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
+        <p><strong>Development Info:</strong></p>
+        <p>• Vite Dev Server: Port: <span class="current-port"></span></p>
+        <p>• React App: Embedded in Laravel</p>
+        <p>• Access via Laravel routes for full functionality</p>
+      </div>
+    </div>
+    
+    <!-- React app will load here -->
+    <div id="vadmin-root"></div>
+    
+    <script>
+      // Dynamic port detection and dashboard button
+      document.addEventListener('DOMContentLoaded', function() {
+        const currentPort = window.location.port;
+        const portSpans = document.querySelectorAll('.current-port');
+        const dashboardBtn = document.getElementById('direct-dashboard-btn');
+        const directAccessNotice = document.querySelector('.direct-access-notice');
+        
+        // Check if we're accessing a dashboard route directly
+        const isDashboardRoute = window.location.pathname === '/admin-vite' || window.location.pathname === '/admin-vite/';
+        
+        if (isDashboardRoute) {
+          // Hide the notice and show React app for dashboard routes
+          if (directAccessNotice) {
+            directAccessNotice.style.display = 'none';
+          }
+          // The React app will load automatically via the script tag below
+        } else {
+          // Show the landing page for root access
+          if (directAccessNotice) {
+            directAccessNotice.style.display = 'block';
+          }
+          document.getElementById('vadmin-root').style.display = 'none';
+          
+          // Set the current port in the button text
+          if (portSpans.length > 0) {
+            portSpans.forEach(span => {
+              span.textContent = currentPort;
+            });
+          }
+          
+          // Set the dashboard button href to the same port
+          if (dashboardBtn) {
+            const protocol = window.location.protocol;
+            const hostname = window.location.hostname;
+            dashboardBtn.href = `${protocol}//${hostname}:${currentPort}/admin-vite`;
+            
+            // Add click handler for smooth navigation
+            dashboardBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              window.location.href = this.href;
+            });
+          }
+        }
+      });
+    </script>
+    
+  </body>
+</html>
