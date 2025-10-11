@@ -33,6 +33,33 @@ Route::middleware('web')->group(function () {
         });
     });
 
+    // Serve static assets for production build (MUST be before catch-all route)
+    Route::get('/resources/views/vadmin-react-vite/dist/assets/{file}', function ($file) {
+        $filePath = base_path('apps/vadmin-testsite/resources/views/vadmin-react-vite/dist/assets/' . $file);
+        
+        if (!file_exists($filePath)) {
+            abort(404, "Asset not found: " . $file);
+        }
+        
+        // Set proper MIME types
+        $mimeType = match(pathinfo($filePath, PATHINFO_EXTENSION)) {
+            'js' => 'application/javascript',
+            'css' => 'text/css',
+            'json' => 'application/json',
+            'html' => 'text/html',
+            'png' => 'image/png',
+            'jpg', 'jpeg' => 'image/jpeg',
+            'svg' => 'image/svg+xml',
+            default => 'text/plain'
+        };
+        
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+            'Cache-Control' => 'public, max-age=31536000', // 1 year cache for assets
+            'ETag' => md5_file($filePath)
+        ]);
+    });
+
     // Catch-all for React Router (SPA mode)
     Route::get('/{any}', function () {
         return view('vadmin-react-vite.index', [

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $siteName }} - Modern Admin</title>
     <meta name="description" content="Modern React + Vite admin interface for {{ $siteName }}">
+    @if(app()->environment('local'))
     <script type="module">
         import RefreshRuntime from 'http://localhost:5178/@react-refresh'
         RefreshRuntime.injectIntoGlobalHook(window)
@@ -12,6 +13,7 @@
         window.$RefreshSig$ = () => (type) => type
         window.__vite_plugin_react_preamble_installed__ = true
     </script>
+    @endif
 
     {{-- Global config for React --}}
     <script>
@@ -71,32 +73,22 @@
 
             console.log('✅ VAdmin React Vite: Dev mode loaded from port ' + vitePort);
         } else {
-            // Production: load built assets from /vadmin-react-vite/dist
-            fetch('/vadmin-react-vite/dist/.vite/manifest.json')
-                .then(r => r.json())
-                .then(manifest => {
-                    const entry = manifest['js/src/main.jsx'];
-                    if (!entry) throw new Error("Entrypoint not found in manifest");
-
-                    // Load CSS
-                    if (entry.css) {
-                        entry.css.forEach(file => {
-                            const link = document.createElement('link');
-                            link.rel = 'stylesheet';
-                            link.href = '/vadmin-react-vite/dist/' + file;
-                            document.head.appendChild(link);
-                        });
-                    }
-
-                    // Load JS
-                    const script = document.createElement('script');
-                    script.type = 'module';
-                    script.src = '/vadmin-react-vite/dist/' + entry.file;
-                    document.head.appendChild(script);
-
-                    console.log('✅ VAdmin React Vite: Production mode loaded');
-                })
-                .catch(e => console.error('❌ VAdmin React Vite: No manifest found', e));
+            // Production: load built assets from same domain
+            console.log('🚀 Loading production assets from same domain...');
+            
+            // Load CSS from same domain
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '/resources/views/vadmin-react-vite/dist/assets/index-BYWrKZjk.css';
+            document.head.appendChild(link);
+            
+            // Load JS from same domain
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = '/resources/views/vadmin-react-vite/dist/assets/index-zpBYmkFd.js';
+            document.head.appendChild(script);
+            
+            console.log('✅ VAdmin React Vite: Production assets loaded from same domain');
         }
     </script>
 </body>
