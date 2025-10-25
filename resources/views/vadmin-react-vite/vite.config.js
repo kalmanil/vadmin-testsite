@@ -39,7 +39,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'dist', // Build to local dist directory
+    outDir: path.resolve(__dirname, 'dist'), // Build to local dist directory
     emptyOutDir: true,
     manifest: true,
     rollupOptions: {

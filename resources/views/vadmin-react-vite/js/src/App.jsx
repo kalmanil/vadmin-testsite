@@ -52,7 +52,7 @@ function App() {
               <div className="text-2xl">🚍</div>
             </div>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             {config.siteName}
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
