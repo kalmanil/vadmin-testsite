@@ -25,15 +25,7 @@ jobs:
             echo "🔄 Pulling latest code..."
             git pull origin main
             
-            echo "📦 Installing frontend dependencies..."
-            cd resources/views/vadmin-react-vite
-            npm install
-            
-            echo "🏗️ Building frontend assets..."
-            npm run build
-            
             echo "🧹 Clearing cache..."
-            cd ../../..
             php artisan config:clear || true
             php artisan cache:clear || true
             php artisan view:clear || true
