@@ -73,22 +73,36 @@
 
             console.log('✅ VAdmin React Vite: Dev mode loaded from port ' + vitePort);
         } else {
-            // Production: load built assets from same domain
-            console.log('🚀 Loading production assets from same domain...');
+            // Production: load built assets from manifest
+            console.log('🚀 Loading production assets from manifest...');
             
-            // Load CSS from same domain
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = '/resources/views/vadmin-react-vite/dist/assets/index-BYWrKZjk.css';
-            document.head.appendChild(link);
-            
-            // Load JS from same domain
-            const script = document.createElement('script');
-            script.type = 'module';
-            script.src = '/resources/views/vadmin-react-vite/dist/assets/index-zpBYmkFd.js';
-            document.head.appendChild(script);
-            
-            console.log('✅ VAdmin React Vite: Production assets loaded from same domain');
+            fetch('/resources/views/vadmin-react-vite/dist/manifest.json')
+                .then(response => response.json())
+                .then(manifest => {
+                    // Find the entry point (usually index.html)
+                    const entry = manifest['index.html'];
+                    
+                    if (entry && entry.css) {
+                        entry.css.forEach(cssFile => {
+                            const link = document.createElement('link');
+                            link.rel = 'stylesheet';
+                            link.href = '/resources/views/vadmin-react-vite/dist/' + cssFile;
+                            document.head.appendChild(link);
+                        });
+                    }
+                    
+                    if (entry && entry.file) {
+                        const script = document.createElement('script');
+                        script.type = 'module';
+                        script.src = '/resources/views/vadmin-react-vite/dist/' + entry.file;
+                        document.body.appendChild(script);
+                    }
+                    
+                    console.log('✅ VAdmin React Vite: Production assets loaded from manifest');
+                })
+                .catch(error => {
+                    console.error('❌ Failed to load manifest:', error);
+                });
         }
     </script>
 </body>
