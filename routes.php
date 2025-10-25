@@ -33,32 +33,48 @@ Route::middleware('web')->group(function () {
         });
     });
 
-    // Serve static assets for production build (MUST be before catch-all route)
-    Route::get('/resources/views/vadmin-react-vite/dist/assets/{file}', function ($file) {
-        $filePath = base_path('apps/vadmin-testsite/resources/views/vadmin-react-vite/dist/assets/' . $file);
+    // Serve all static files from dist folder (recursive, MUST be before catch-all route)
+    Route::get('/resources/views/vadmin-react-vite/dist/{path}', function ($path) {
+        $filePath = base_path('apps/vadmin-testsite/resources/views/vadmin-react-vite/dist/' . $path);
         
-        if (!file_exists($filePath)) {
-            abort(404, "Asset not found: " . $file);
+        // Security: prevent directory traversal
+        $realPath = realpath($filePath);
+        $distPath = realpath(base_path('apps/vadmin-testsite/resources/views/vadmin-react-vite/dist'));
+        
+        if (!$realPath || strpos($realPath, $distPath) !== 0) {
+            abort(404, "Invalid path");
+        }
+        
+        if (!file_exists($realPath)) {
+            abort(404, "File not found: " . $path);
         }
         
         // Set proper MIME types
-        $mimeType = match(pathinfo($filePath, PATHINFO_EXTENSION)) {
+        $mimeType = match(pathinfo($realPath, PATHINFO_EXTENSION)) {
             'js' => 'application/javascript',
+            'mjs' => 'application/javascript',
             'css' => 'text/css',
             'json' => 'application/json',
             'html' => 'text/html',
             'png' => 'image/png',
             'jpg', 'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
             'svg' => 'image/svg+xml',
+            'woff', 'woff2' => 'font/woff',
+            'ttf' => 'font/ttf',
+            'eot' => 'application/vnd.ms-fontobject',
             default => 'text/plain'
         };
         
-        return response()->file($filePath, [
+        // Shorter cache for manifest, longer for assets
+        $cacheMaxAge = basename($realPath) === 'manifest.json' ? 3600 : 31536000;
+        
+        return response()->file($realPath, [
             'Content-Type' => $mimeType,
-            'Cache-Control' => 'public, max-age=31536000', // 1 year cache for assets
-            'ETag' => md5_file($filePath)
+            'Cache-Control' => 'public, max-age=' . $cacheMaxAge,
+            'ETag' => md5_file($realPath)
         ]);
-    });
+    })->where('path', '.*');
 
     // Catch-all for React Router (SPA mode)
     Route::get('/{any}', function () {
