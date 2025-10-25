@@ -8,7 +8,7 @@ export default defineConfig({
     // Enable CSS HMR
     fastRefresh: true
   })],
-  root: '.',
+  root: path.resolve(__dirname, '.'),
   css: {
     devSourcemap: true
   },
@@ -41,7 +41,7 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, 'dist'), // Build to local dist directory
     emptyOutDir: true,
-    manifest: true,
+    manifest: 'manifest.json', // Output manifest in dist root
     rollupOptions: {
       input: path.resolve(__dirname, 'index.html'),
     },
